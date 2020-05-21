@@ -166,7 +166,7 @@ int board_info_init(void)
    // jimbotel: according to https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md , last two digits of revision = 17 (hex 11) for Pi4
    // jimbotel: board_revision will become 2 a few lines below. Not sure why board_revision is finally set to either 1 or 2, I just didn't want to change previous behavior.
    // CaskAle:  added revision check for Pi 4 rev. 2   
-   if (board_revision == 17 || board_revision = 18)
+   if (board_revision == 17 || board_revision == 18)
       board_model = MODEL_4B;
 
    if (end != ptr + 2)
