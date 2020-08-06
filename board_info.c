@@ -30,6 +30,7 @@ enum
 static int board_info_initialised = 0;
 static int board_model = MODEL_UNKNOWN;
 static int board_revision;
+static int board_type;
 
 static void
 fatal(char *fmt, ...)
@@ -126,8 +127,8 @@ uint32_t board_info_sdram_address(void)
 
 int board_info_init(void)
 {
-   char buf[128], revstr[128], modelstr[128];
-   char *ptr, *end, *res;
+   char buf[128], revstr[128], modelstr[128], mtype[3];
+   char *ptr, *ptr2, *end, *res;
    FILE *fp;
 
    if (board_info_initialised)
@@ -163,10 +164,13 @@ int board_info_init(void)
    ptr = revstr + strlen(revstr) - 3;
    board_revision = strtol(ptr, &end, 16);
 
-   // jimbotel: according to https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md , last two digits of revision = 17 (hex 11) for Pi4
-   // jimbotel: board_revision will become 2 a few lines below. Not sure why board_revision is finally set to either 1 or 2, I just didn't want to change previous behavior.
-   // CaskAle:  added revision check for Pi 4 rev. 2   
-   if (board_revision == 17 || board_revision == 18)
+   ptr2 = revstr + strlen(revstr) - 4;
+   memcpy( mtype, ptr2, 2 );
+   mtype[2] = '\0';
+   board_type = strtol(mtype,NULL,16);
+
+   // jimbotel: according to https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md , Type is 0x11 for Pi4
+   if(board_type == 0x11)
       board_model = MODEL_4B;
 
    if (end != ptr + 2)
